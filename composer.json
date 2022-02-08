@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Lof\\SellerMessageGraphQl\\": ""
+            "Lof\\SellerOrderGraphQl\\": ""
         },
         "files": [
             "registration.php"

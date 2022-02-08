@@ -1,4 +1,4 @@
-# Mage2 Module Lof SellerMessageGraphQl
+# Mage2 Module Lof SellerOrderGraphQl
 
     ``landofcoder/module-marketplace-seller-fulfillment-graphql
 ``
@@ -19,7 +19,7 @@ magento 2 marketplace graphql extension
 ### Type 1: Zip file
 
  - Unzip the zip file in `app/code/Lof`
- - Enable the module by running `php bin/magento module:enable Lof_SellerMessageGraphQl`
+ - Enable the module by running `php bin/magento module:enable Lof_SellerOrderGraphQl`
  - Apply database updates by running `php bin/magento setup:upgrade`\*
  - Flush the cache by running `php bin/magento cache:flush`
 
@@ -31,7 +31,7 @@ magento 2 marketplace graphql extension
     - public github repository as vcs
  - Add the composer repository to the configuration by running `composer config repositories.repo.magento.com composer https://repo.magento.com/`
  - Install the module composer by running `composer require landofcoder/module-marketplace-seller-graphql`
- - enable the module by running `php bin/magento module:enable Lof_SellerMessageGraphQl`
+ - enable the module by running `php bin/magento module:enable Lof_SellerOrderGraphQl`
  - apply database updates by running `php bin/magento setup:upgrade`\*
  - Flush the cache by running `php bin/magento cache:flush`
 
