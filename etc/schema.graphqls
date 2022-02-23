@@ -12,6 +12,22 @@
 # version in the future.
 #
 # @category    Landofcoder
-# @package     Lof_SellerOrderGraphQl
+# @package     Lof_SellerMessageGraphQl
 # @copyright   Copyright (c) 2022 Landofcoder (https://landofcoder.com/)
 # @license     https://landofcoder.com/LICENSE.txt
+
+type Query {
+    lofSellerMessage : [SellerMessages] @resolver(class: "\\Lof\\SellerMessageGraphQl\\Model\\Resolver\\SellerMessage") @doc(description: "The seller query searches for sellers that match the criteria specified in the search and filter attributes")
+}
+
+type SellerMessages {
+  items: [SellerMessage] @doc(description: "An array of items that match the specified search criteria")
+}
+
+type SellerMessage {
+    customerId: Int @doc(description: "Id of review reply")
+    description:String @doc(description:"")
+    subject:String
+    seller_id:Int
+    created_at: String @doc(description: "created_at filed")
+}

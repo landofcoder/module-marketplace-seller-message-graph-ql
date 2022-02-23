@@ -14,14 +14,15 @@
   * version in the future.
   *
   * @category   Landofcoder
-  * @package    Lof_SellerOrderGraphQl
+  * @package    Lof_SellerMessageGraphQl
   * @copyright  Copyright (c) 2022 Landofcoder (https://landofcoder.com/)
   * @license    https://landofcoder.com/terms
   -->
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-	<module name="Lof_SellerOrderGraphQl">
+	<module name="Lof_SellerMessageGraphQl">
 		<sequence>
+      <module name="Magento_Backend"/>
 			<module name="Magento_GraphQl"/>
 			<module name="Magento_UrlRewriteGraphQl"/>
             <module name="Lof_MarketPlace"/>
