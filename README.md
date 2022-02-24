@@ -255,15 +255,14 @@ lofProductBySellerId(
 ```
 {  
   lofSellerMessage{
-    items{
       customerId
      	created_at
       description
       subject
-      seller_id 
+      seller_id
     }
-  }
 }
+
 ```
 
 

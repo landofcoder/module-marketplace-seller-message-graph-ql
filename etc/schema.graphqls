@@ -17,10 +17,11 @@
 # @license     https://landofcoder.com/LICENSE.txt
 
 type Query {
-    lofSellerMessage : [SellerMessages] @resolver(class: "\\Lof\\SellerMessageGraphQl\\Model\\Resolver\\SellerMessage") @doc(description: "The seller query searches for sellers that match the criteria specified in the search and filter attributes")
+    lofSellerMessage : [SellerMessage] @resolver(class: "\\Lof\\SellerMessageGraphQl\\Model\\Resolver\\SellerMessage") @doc(description: "The seller query searches for sellers that match the criteria specified in the search and filter attributes")
 }
 
 type SellerMessages {
+  total_count: Int @doc(description: "The number of seller rates returned")
   items: [SellerMessage] @doc(description: "An array of items that match the specified search criteria")
 }
 
@@ -30,4 +31,9 @@ type SellerMessage {
     subject:String
     seller_id:Int
     created_at: String @doc(description: "created_at filed")
+}
+
+type Res {
+    code: String
+    message: String
 }
