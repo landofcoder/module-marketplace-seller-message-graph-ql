@@ -17,7 +17,7 @@
 # @license     https://landofcoder.com/LICENSE.txt
 
 type Query {
-    lofListMessage : [SellerMessages] @resolver(class: "\\Lof\\SellerMessageGraphQl\\Model\\Resolver\\SellerMessage") @doc(description: "The seller query searches for sellers that match the criteria specified in the search and filter attributes")
+    lofListMessage : SellerMessages @resolver(class: "\\Lof\\SellerMessageGraphQl\\Model\\Resolver\\SellerMessage") @doc(description: "The seller query searches for sellers that match the criteria specified in the search and filter attributes")
 
 }
 type SellerMessages {
@@ -26,19 +26,19 @@ type SellerMessages {
 }
 
 type SellerMessage {
-    customer_id: Int @doc(description: "Id of review reply")
+    id:Int
     description:String @doc(description:"")
     subject:String
     created_at: String @doc(description: "created_at filed")
     status:Int
-    details: Details @resolver(class: "\\Lof\\SellerMessageGraphQl\\Model\\Resolver\\SellerMessageDetail") 
+    messDetails: MessageDetail @doc(description: "List of message by id.")
+     @resolver(class: "\\Lof\\SellerMessageGraphQl\\Model\\Resolver\\SellerMessageDetail")
 }
-
-type Details{
-  items: [SellerMessageDetail] @doc(description: "An array of items that match the specified search criteria")
+type MessageDetail {
+    content: String @doc(description: "An encoded rating value id.")
+    sender_name: String @doc(description: "An encoded rating value id.")
 }
-
-type SellerMessageDetail {
-    id: Int @doc()
-    content:String @doc()
+type Res {
+    code: String
+    message: String
 }

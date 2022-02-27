@@ -15,12 +15,17 @@ use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 
 
-class SellerMessage implements ResolverInterface
+class SellerMessageDetail implements ResolverInterface
 {
     /**
      * @var SellerMessageRepositoryInterface
      */
     private $repository;
+
+    /**
+     * @var \Lof\MarketPlace\Model\MessageDetail
+     */
+    protected $detail;
 
 
     /**
@@ -41,20 +46,39 @@ class SellerMessage implements ResolverInterface
      * @param SellerMessageRepositoryInterface $repository
      * @param \Lof\MarketPlace\Model\Message $message
      * @param \Magento\Customer\Model\Session $customerSession
+     * @param \Magento\Framework\View\Element\Template\Context $context
+     * @param \Lof\MarketPlace\Model\MessageDetail $detail
+     * 
      * 
      */
     public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
         SellerMessageRepositoryInterface $repository,
         \Magento\Customer\Model\Session $customerSession,
-        \Lof\MarketPlace\Model\Message $message
+        \Lof\MarketPlace\Model\Message $message,
+        \Lof\MarketPlace\Model\MessageDetail $detail
+
     ) {
         $this->repository = $repository;
         $this->_customerSession = $customerSession;
         $this->message = $message;
+        $this->request = $context->getRequest();
+        $this->detail = $detail;
     }
 
     /**
-     * @inheritdoc
+     * Resolve product review rating values
+     *
+     * @param Field $field
+     * @param ContextInterface $context
+     * @param ResolveInfo $info
+     * @param array|null $value
+     * @param array|null $args
+     * @return array|Value|mixed
+     *
+     * @throws GraphQlInputException
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function resolve(
         Field $field,
@@ -63,25 +87,22 @@ class SellerMessage implements ResolverInterface
         array $value = null,
         array $args = null
     ) {
-
         /** @var ContextInterface $context */
         if (false === $context->getExtensionAttributes()->getIsCustomer()) {
             throw new GraphQlAuthorizationException(__('The current customer isn\'t authorized.'));
         }
 
-        $messeges = $this->_messages = $this->message->getCollection()
-            ->addFieldToFilter('owner_id', ['gt' => 0])
-            ->addFieldToFilter('sender_id', $this->_customerSession->getCustomerId());
+        $id = $value['id'];
 
-        foreach ($messeges->load() as $messege) {
-            $items[] = [
-                'created_at' => $messege->getCreatedAt(),
-                'description' => $messege->getDescription(),
-                'subject' => $messege->getSubject(),
-                'status' => $messege->getStatus(),
-                'id'=>$messege->getData('message_id')
+        $messDetails = $this->detail->getCollection()
+            ->addFieldToFilter('message_id', $id);
+
+        foreach ($messDetails as $messegedetail) {
+            $data = [
+                'content' => $messegedetail->getContent(),
+                'sender_name' => $messegedetail->getData('sender_name'),
             ];
         }
-        return ['items' => $items];
+        return $data;
     }
 }
