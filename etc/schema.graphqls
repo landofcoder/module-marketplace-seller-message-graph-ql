@@ -20,6 +20,7 @@ type Query {
     lofListMessage : SellerMessages @resolver(class: "\\Lof\\SellerMessageGraphQl\\Model\\Resolver\\SellerMessage") @doc(description: "The seller query searches for sellers that match the criteria specified in the search and filter attributes")
 
 }
+
 type SellerMessages {
   total_count: Int @doc(description: "The number of seller rates returned")
   items: [SellerMessage] @doc(description: "An array of items that match the specified search criteria")
@@ -31,12 +32,14 @@ type SellerMessage {
     subject:String
     created_at: String @doc(description: "created_at filed")
     status:Int
-    messDetails: MessageDetail @doc(description: "List of message by id.")
+    messDetails: [MessageDetail] @doc(description: "List of message by id.")
      @resolver(class: "\\Lof\\SellerMessageGraphQl\\Model\\Resolver\\SellerMessageDetail")
 }
 type MessageDetail {
     content: String @doc(description: "An encoded rating value id.")
     sender_name: String @doc(description: "An encoded rating value id.")
+    created_at: String @doc(description: "created_at filed")
+
 }
 type Res {
     code: String

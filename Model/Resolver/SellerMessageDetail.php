@@ -5,47 +5,23 @@ declare(strict_types=1);
 namespace Lof\SellerMessageGraphQl\Model\Resolver;
 
 use Magento\Framework\GraphQl\Config\Element\Field;
-use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\GraphQl\Model\Query\ContextInterface;
-use Lof\MarketPlace\Api\SellerMessageRepositoryInterface;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
-use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
+use \Lof\MarketPlace\Model\ResourceModel\MessageDetail\CollectionFactory;
+
 
 
 class SellerMessageDetail implements ResolverInterface
 {
+  
     /**
-     * @var SellerMessageRepositoryInterface
+     * @var CollectionFactory
      */
-    private $repository;
+    protected $detailCollectionFactory;
 
     /**
-     * @var \Lof\MarketPlace\Model\MessageDetail
-     */
-    protected $detail;
-
-
-    /**
-     * @var \Magento\Customer\Model\Session
-     */
-    protected $_customerSession;
-    /**
-     * @var \Lof\MarketPlace\Model\MessageFactory
-     */
-    protected $message;
-
-    /**
-     * @var
-     */
-    protected $_messages;
-
-    /**
-     * @param SellerMessageRepositoryInterface $repository
-     * @param \Lof\MarketPlace\Model\Message $message
-     * @param \Magento\Customer\Model\Session $customerSession
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \Lof\MarketPlace\Model\MessageDetail $detail
      * 
@@ -53,17 +29,11 @@ class SellerMessageDetail implements ResolverInterface
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
-        SellerMessageRepositoryInterface $repository,
-        \Magento\Customer\Model\Session $customerSession,
-        \Lof\MarketPlace\Model\Message $message,
-        \Lof\MarketPlace\Model\MessageDetail $detail
+        CollectionFactory $detailCollectionFactory
 
     ) {
-        $this->repository = $repository;
-        $this->_customerSession = $customerSession;
-        $this->message = $message;
         $this->request = $context->getRequest();
-        $this->detail = $detail;
+        $this->detailCollectionFactory = $detailCollectionFactory;
     }
 
     /**
@@ -87,20 +57,18 @@ class SellerMessageDetail implements ResolverInterface
         array $value = null,
         array $args = null
     ) {
-        /** @var ContextInterface $context */
-        if (false === $context->getExtensionAttributes()->getIsCustomer()) {
-            throw new GraphQlAuthorizationException(__('The current customer isn\'t authorized.'));
+       
+        if (!isset($value['id'])) {
+            throw new GraphQlInputException(__('Value must contain "id" property.'));
         }
-
         $id = $value['id'];
-
-        $messDetails = $this->detail->getCollection()
-            ->addFieldToFilter('message_id', $id);
-
+        $messDetails = $this->detailCollectionFactory->create()->addFieldToFilter('message_id', $id);
+        $data=[];
         foreach ($messDetails as $messegedetail) {
-            $data = [
+            $data[] = [
                 'content' => $messegedetail->getContent(),
                 'sender_name' => $messegedetail->getData('sender_name'),
+                'created_at'=>$messegedetail->getCreatedAt()
             ];
         }
         return $data;

@@ -9,20 +9,12 @@ use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\GraphQl\Model\Query\ContextInterface;
-use Lof\MarketPlace\Api\SellerMessageRepositoryInterface;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\GraphQl\Exception\GraphQlInputException;
-use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
+
 
 
 class SellerMessage implements ResolverInterface
 {
-    /**
-     * @var SellerMessageRepositoryInterface
-     */
-    private $repository;
-
-
+   
     /**
      * @var \Magento\Customer\Model\Session
      */
@@ -38,17 +30,14 @@ class SellerMessage implements ResolverInterface
     protected $_messages;
 
     /**
-     * @param SellerMessageRepositoryInterface $repository
      * @param \Lof\MarketPlace\Model\Message $message
      * @param \Magento\Customer\Model\Session $customerSession
      * 
      */
     public function __construct(
-        SellerMessageRepositoryInterface $repository,
         \Magento\Customer\Model\Session $customerSession,
         \Lof\MarketPlace\Model\Message $message
     ) {
-        $this->repository = $repository;
         $this->_customerSession = $customerSession;
         $this->message = $message;
     }
