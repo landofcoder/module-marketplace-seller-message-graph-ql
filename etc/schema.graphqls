@@ -21,6 +21,14 @@ type Query {
 
 }
 
+type Mutation {
+
+    LofMkpCustomerSendMessageSeller(input: CustomerMessageInput!): Res @resolver(class:"\\Lof\\SellerMessageGraphQl\\Model\\Resolver\\CustomerSendMessageSeller") @doc(description: "Customer send message to seller")
+    
+    LofMkpRepliesMessage(input: RepliesMessageInput!): Res @resolver(class:"\\Lof\\SellerMessageGraphQl\\Model\\Resolver\\RepliesMessage") @doc(description: "RepliesMessage")
+
+}
+
 type SellerMessages {
   total_count: Int @doc(description: "The number of seller rates returned")
   items: [SellerMessage] @doc(description: "An array of items that match the specified search criteria")
@@ -41,6 +49,17 @@ type MessageDetail {
     created_at: String @doc(description: "created_at filed")
 
 }
+
+input CustomerMessageInput {
+    seller_id  : String!
+    content  : String!
+}
+
+input RepliesMessageInput{
+    message_id: String!
+    content  : String!
+}
+
 type Res {
     code: String
     message: String

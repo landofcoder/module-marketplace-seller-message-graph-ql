@@ -59,4 +59,12 @@ magento 2 marketplace graphql extension
     }
   }
 }
-2. 
+2. mutation customer send message seller
+mutation {
+  LofMkpCustomerSendMessageSeller(input: {seller_id: "2", content: "hákhdkjashd"}) {
+    code
+    message
+  }
+}
+3. Replies messege
+
