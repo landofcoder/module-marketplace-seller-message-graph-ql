@@ -25,7 +25,7 @@ type Mutation {
 
     LofMkpCustomerSendMessageSeller(input: CustomerMessageInput!): Res @resolver(class:"\\Lof\\SellerMessageGraphQl\\Model\\Resolver\\CustomerSendMessageSeller") @doc(description: "Customer send message to seller")
     
-    LofMkpRepliesMessage(input: RepliesMessageInput!): Res @resolver(class:"\\Lof\\SellerMessageGraphQl\\Model\\Resolver\\RepliesMessage") @doc(description: "RepliesMessage")
+    LofMkpCreateRepliesMessage(input: CreateRepliesMessageInput!): Res @resolver(class:"\\Lof\\SellerMessageGraphQl\\Model\\Resolver\\RepliesMessage") @doc(description: "RepliesMessage")
 
 }
 
@@ -55,7 +55,7 @@ input CustomerMessageInput {
     content  : String!
 }
 
-input RepliesMessageInput{
+input CreateRepliesMessageInput {
     message_id: String!
     content  : String!
 }
