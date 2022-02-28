@@ -11,9 +11,7 @@ use Magento\GraphQl\Model\Query\ContextInterface;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use \Lof\MarketPlace\Model\ResourceModel\MessageDetail\CollectionFactory;
 
-
-
-class SellerMessageDetail implements ResolverInterface
+class MessageDetail implements ResolverInterface
 {
   
     /**
@@ -24,8 +22,6 @@ class SellerMessageDetail implements ResolverInterface
     /**
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \Lof\MarketPlace\Model\MessageDetail $detail
-     * 
-     * 
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
@@ -58,19 +54,45 @@ class SellerMessageDetail implements ResolverInterface
         array $args = null
     ) {
        
-        if (!isset($value['id'])) {
-            throw new GraphQlInputException(__('Value must contain "id" property.'));
+        if (!isset($value['message_id'])) {
+            throw new GraphQlInputException(__('Value must contain "message_id" property.'));
         }
-        $id = $value['id'];
-        $messDetails = $this->detailCollectionFactory->create()->addFieldToFilter('message_id', $id);
-        $data=[];
-        foreach ($messDetails as $messegedetail) {
-            $data[] = [
+
+        if ($args['currentPage'] < 1) {
+            throw new GraphQlInputException(__('currentPage value must be greater than 0.'));
+        }
+        if ($args['pageSize'] < 1) {
+            throw new GraphQlInputException(__('pageSize value must be greater than 0.'));
+        }
+
+        $collection = $this->detailCollectionFactory->create()
+                        ->addFieldToFilter('message_id', (int)$value['message_id'])
+                        ->setPageSize($args['pageSize'])
+                        ->setCurPage($args['currentPage']);
+
+        $totalPages = $args['pageSize'] ? ((int)ceil($collection->getSize() / $args['pageSize'])) : 0;
+
+        $items = [];
+
+        foreach ($collection->getItems() as $messegedetail) {
+            $items[] = [
                 'content' => $messegedetail->getContent(),
-                'sender_name' => $messegedetail->getData('sender_name'),
-                'created_at'=>$messegedetail->getCreatedAt()
+                'sender_name' => $messegedetail->getSenderName(),
+                'sender_email' => $messegedetail->getSenderEmail(),
+                'receiver_name' => $messegedetail->getReceiverName(),
+                'is_read' => $messegedetail->getIsRead(),
+                'created_at' => $messegedetail->getCreatedAt()
             ];
         }
-        return $data;
+
+        return [
+            'total_count' => $collection->getSize(),
+            'items'       => $items,
+            'page_info' => [
+                'page_size' => $args['pageSize'],
+                'current_page' => $args['currentPage'],
+                'total_pages' => $totalPages
+            ]
+        ];
     }
 }

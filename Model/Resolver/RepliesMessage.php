@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Landofcoder
  *
@@ -29,6 +30,7 @@ use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
+use Lof\MarketPlace\Api\Data\SellerMessageInterfaceFactory;
 
 class RepliesMessage implements ResolverInterface
 {
@@ -36,11 +38,17 @@ class RepliesMessage implements ResolverInterface
      * @var SellerMessageRepositoryInterface
      */
     private $repliesMessageRepository;
+    /**
+     * @var SellerMessageInterfaceFactory
+     */
+    protected $sellerMessageFactory;
 
     public function __construct(
-        SellerMessageRepositoryInterface $repliesMessageRepository
+        SellerMessageRepositoryInterface $repliesMessageRepository,
+        SellerMessageInterfaceFactory $sellerMessageFactory
     ) {
         $this->repliesMessageRepository = $repliesMessageRepository;
+        $this->sellerMessageFactory = $sellerMessageFactory;
     }
 
     /**
@@ -53,16 +61,27 @@ class RepliesMessage implements ResolverInterface
         array $value = null,
         array $args = null
     ) {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+
         if (!$context->getExtensionAttributes()->getIsCustomer()) {
             throw new GraphQlAuthorizationException(__('The current customer isn\'t authorized.'));
         }
         if (!($args['input']) || !isset($args['input'])) {
             throw new GraphQlInputException(__('"input" value should be specified'));
         }
-        $args = $args['input'];
-        $message = $args['message_id'];
-        $message = $args['content'];
 
-        return $this->repliesMessageRepository->replyMessage($message);
+        $args = $args['input'];
+        
+        $sellermessageData = $this->sellerMessageFactory->create()
+            ->setMessageId($args["message_id"])
+            ->setContent($args["content"]);
+
+
+        $messageModel = $objectManager->get(\Lof\MarketPlace\Model\MessageDetail::class)
+            ->load($args['message_id']);
+
+        $messageModel->getData($sellermessageData);
+    
+        return $this->repliesMessageRepository->replyMessage($messageModel);
     }
 }
