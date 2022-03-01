@@ -64,4 +64,11 @@ interface MessageRepositoryInterface
         int $customerId,
         \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
     );
+
+    /**
+     * @param string $subject
+     * @param string $message
+     * @return mixed
+     */
+    public function sendMessageAdmin(string $subject, string $message);
 }

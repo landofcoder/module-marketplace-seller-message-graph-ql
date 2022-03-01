@@ -35,6 +35,17 @@ class MessageRepository implements MessageRepositoryInterface
      */
     protected $dataObjectHelper;
 
+        /**
+     * @var \Lof\MarketPlace\Model\SellerFactory
+     */
+    protected $sellerFactory;
+
+     /**
+     * @var \Magento\Customer\Model\Session
+     */
+    protected $session;
+
+
     /**
      * SellerMessageRepository constructor.
      * @param MessageCollectionFactory $messageCollectionFactory
@@ -50,6 +61,8 @@ class MessageRepository implements MessageRepositoryInterface
      * @param CollectionProcessorInterface $collectionProcessor
      * @param JoinProcessorInterface $extensionAttributesJoinProcessor
      * @param ExtensibleDataObjectConverter $extensibleDataObjectConverter
+     * @param \Lof\MarketPlace\Model\SellerFactory $sellerFactory
+     * @param \Magento\Customer\Model\Session $customerSession
      */
     public function __construct(
         MessageCollectionFactory $messageCollectionFactory,
@@ -62,6 +75,8 @@ class MessageRepository implements MessageRepositoryInterface
         DataObjectHelper $dataObjectHelper,
         DataObjectProcessor $dataObjectProcessor,
         StoreManagerInterface $storeManager,
+        \Lof\MarketPlace\Model\SellerFactory $sellerFactory,
+        \Magento\Customer\Model\Session $customerSession,
         CollectionProcessorInterface $collectionProcessor,
         JoinProcessorInterface $extensionAttributesJoinProcessor,
         ExtensibleDataObjectConverter $extensibleDataObjectConverter
@@ -72,6 +87,8 @@ class MessageRepository implements MessageRepositoryInterface
         $this->dataObjectHelper = $dataObjectHelper;
         $this->dataObjectProcessor = $dataObjectProcessor;
         $this->storeManager = $storeManager;
+        $this->sellerFactory = $sellerFactory;
+        $this->session = $customerSession;
         $this->collectionProcessor = $collectionProcessor;
         $this->extensionAttributesJoinProcessor = $extensionAttributesJoinProcessor;
         $this->extensibleDataObjectConverter = $extensibleDataObjectConverter;
@@ -173,6 +190,42 @@ class MessageRepository implements MessageRepositoryInterface
         $searchResults->setTotalCount($collection->getSize());
         return $searchResults;
     }
+
+/**
+     * @param string $subject
+     * @param string $message
+     * @return array
+     * @throws NoSuchEntityException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function sendMessageAdmin(string $subject, string $message)
+    {
+        $customerSession = $this->session;
+        $customerId = $customerSession->getId();
+        if ($customerId) {
+            $seller = $this->sellerFactory->create()->load($customerId, 'customer_id');
+            $sellerSendId = $this->helper->getSellerId() ? $this->helper->getSellerId() : 0;
+            $message = $this->messageFactory->create();
+            $message->setAdminId($seller->getId())
+                ->setSellerId($customerId)
+                ->setSellerEmail($customerSession->getEmail())
+                ->setSellerName($customerSession->getFirstName())
+                ->setSellerSend($sellerSendId)
+                ->setSubject($subject)
+                ->setDescription($message)
+                ->setReceiverId($seller->getId())
+                ->setSubject('subject')
+                ->setStatus(1)
+                ->setIsRead(0)->save();
+
+            $result = ["code" => 0, "message" => "Send message success"];
+        } else {
+            $result = ["code" => 405, "message" => "Error"];
+        }
+        return $result;
+    }
+
+
 
     /**
      * convert array data to object
