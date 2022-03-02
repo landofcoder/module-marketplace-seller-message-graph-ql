@@ -97,11 +97,12 @@ class Messages implements ResolverInterface
         if (!$seller || !$seller->getSellerId()) {
             throw new GraphQlInputException(__('current seller is not available.'));
         }
+        
 
         $searchCriteria = $this->searchCriteriaBuilder->build( 'lof_seller_messages', $args );
         $searchCriteria->setCurrentPage( $args['currentPage'] );
         $searchCriteria->setPageSize( $args['pageSize'] );
-        $searchResult = $this->repository->getListSellerMessages($seller->getSellerId(), $searchCriteria);
+        $searchResult = $this->repository->getListSellerMessages((int) $seller->getSellerId(), $searchCriteria);
 
         $totalPages = $args['pageSize'] ? ((int)ceil($searchResult->getTotalCount() / $args['pageSize'])) : 0;
 

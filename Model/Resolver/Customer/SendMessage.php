@@ -77,12 +77,12 @@ class SendMessage implements ResolverInterface
         $args = $args['input'];
         $sellerUrl = $args['seller_url'];
 
-        $sellerId = $this->collectionFactory->create()
+        $seller = $this->collectionFactory->create()
                         ->addFieldToFilter("url_key", $sellerUrl)
                         ->getFirstItem();
         $content = $args['content'];
-        $subject = $args['subject'];
+        // $subject = $args['subject'];
 
-        return $this->customerMessageRepository->sendMessageSeller($content, $sellerId);
+        return $this->customerMessageRepository->sendMessageSeller($content,(String) $seller->getSellerId());
     }
 }

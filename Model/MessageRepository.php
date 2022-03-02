@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Copyright © Landofcoder All rights reserved.
  * See COPYING.txt for license details.
  */
+
 declare(strict_types=1);
 
 namespace Lof\SellerMessageGraphQl\Model;
@@ -23,6 +25,7 @@ use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Reflection\DataObjectProcessor;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Class MessageRepository
@@ -35,15 +38,25 @@ class MessageRepository implements MessageRepositoryInterface
      */
     protected $dataObjectHelper;
 
-        /**
+    /**
      * @var \Lof\MarketPlace\Model\SellerFactory
      */
     protected $sellerFactory;
 
-     /**
+    /**
      * @var \Magento\Customer\Model\Session
      */
     protected $session;
+
+    /**
+     * @var \Lof\MarketPlace\Helper\Data
+     */
+    protected $helper;
+
+    /**
+     * @var \Lof\MarketPlace\Model\MessageAdmin
+     */
+    protected $messageAdminFactory;
 
 
     /**
@@ -63,6 +76,8 @@ class MessageRepository implements MessageRepositoryInterface
      * @param ExtensibleDataObjectConverter $extensibleDataObjectConverter
      * @param \Lof\MarketPlace\Model\SellerFactory $sellerFactory
      * @param \Magento\Customer\Model\Session $customerSession
+     * @param \Lof\MarketPlace\Helper\Data $helper
+     * @param \Lof\MarketPlace\Model\MessageAdminFactory $messageAdminFactory
      */
     public function __construct(
         MessageCollectionFactory $messageCollectionFactory,
@@ -77,9 +92,11 @@ class MessageRepository implements MessageRepositoryInterface
         StoreManagerInterface $storeManager,
         \Lof\MarketPlace\Model\SellerFactory $sellerFactory,
         \Magento\Customer\Model\Session $customerSession,
+        \Lof\MarketPlace\Helper\Data $helper,
         CollectionProcessorInterface $collectionProcessor,
         JoinProcessorInterface $extensionAttributesJoinProcessor,
-        ExtensibleDataObjectConverter $extensibleDataObjectConverter
+        ExtensibleDataObjectConverter $extensibleDataObjectConverter,
+        \Lof\MarketPlace\Model\MessageAdminFactory $messageAdminFactory
     ) {
         $this->messageDetailCollectionFactory = $messageDetailCollectionFactory;
         $this->messageCollectionFactory = $messageCollectionFactory;
@@ -89,6 +106,7 @@ class MessageRepository implements MessageRepositoryInterface
         $this->storeManager = $storeManager;
         $this->sellerFactory = $sellerFactory;
         $this->session = $customerSession;
+        $this->helper = $helper;
         $this->collectionProcessor = $collectionProcessor;
         $this->extensionAttributesJoinProcessor = $extensionAttributesJoinProcessor;
         $this->extensibleDataObjectConverter = $extensibleDataObjectConverter;
@@ -96,6 +114,8 @@ class MessageRepository implements MessageRepositoryInterface
         $this->searchAdminResultsFactory = $searchAdminResultsFactory;
         $this->messageAdminCollectionFactory = $messageAdminCollectionFactory;
         $this->dataMessageFactory = $dataMessageFactory;
+        $this->messageAdminFactory = $messageAdminFactory;
+;
     }
 
     /**
@@ -165,7 +185,7 @@ class MessageRepository implements MessageRepositoryInterface
      */
     public function getListMessages(
         int $customerId,
-        \Magento\Framework\Api\getListMessages $criteria
+        \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
     ) {
         $collection = $this->messageCollectionFactory->create();
 
@@ -174,12 +194,12 @@ class MessageRepository implements MessageRepositoryInterface
             \Lof\SellerMessageGraphQl\Api\Data\MessageInterface::class
         );
 
-        $this->collectionProcessor->process($criteria, $collection);
+        $this->collectionProcessor->process($searchCriteria, $collection);
 
         $collection->addFieldToFilter("sender_id", $customerId);
 
         $searchResults = $this->searchResultsFactory->create();
-        $searchResults->setSearchCriteria($criteria);
+        $searchResults->setSearchCriteria($searchCriteria);
 
         $items = [];
         foreach ($collection as $key => $model) {
@@ -191,7 +211,7 @@ class MessageRepository implements MessageRepositoryInterface
         return $searchResults;
     }
 
-/**
+    /**
      * @param string $subject
      * @param string $message
      * @return array
@@ -202,21 +222,17 @@ class MessageRepository implements MessageRepositoryInterface
     {
         $customerSession = $this->session;
         $customerId = $customerSession->getId();
-        if ($customerId) {
-            $seller = $this->sellerFactory->create()->load($customerId, 'customer_id');
-            $sellerSendId = $this->helper->getSellerId() ? $this->helper->getSellerId() : 0;
-            $message = $this->messageFactory->create();
-            $message->setAdminId($seller->getId())
-                ->setSellerId($customerId)
-                ->setSellerEmail($customerSession->getEmail())
-                ->setSellerName($customerSession->getFirstName())
-                ->setSellerSend($sellerSendId)
+        $seller = $this->sellerFactory->create()->load($customerId, 'customer_id');
+        if ($customerSession->isLoggedIn() && $seller->getStatus() == 1) {
+            $data['seller_id'] = $this->helper->getSellerId();
+            $message = $this->messageAdminFactory->create();
+            $message->setSellerId($seller->getSellerId())
+                ->setSellerEmail($seller->getEmail())
+                ->setSellerName($seller->getFirstName())
                 ->setSubject($subject)
                 ->setDescription($message)
-                ->setReceiverId($seller->getId())
-                ->setSubject('subject')
                 ->setStatus(1)
-                ->setIsRead(0)->save();
+                ->save();
 
             $result = ["code" => 0, "message" => "Send message success"];
         } else {
@@ -253,7 +269,7 @@ class MessageRepository implements MessageRepositoryInterface
                 MessageInterface::class
             );
         }
-        
+
         return $dataObject;
     }
 }

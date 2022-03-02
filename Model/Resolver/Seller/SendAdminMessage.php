@@ -28,6 +28,8 @@ use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Lof\SellerMessageGraphQl\Api\MessageRepositoryInterface;
+use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
+
 
 
 class SendAdminMessage implements ResolverInterface
@@ -61,7 +63,9 @@ class SendAdminMessage implements ResolverInterface
         array $value = null,
         array $args = null
     ) {
-
+        if (!$context->getExtensionAttributes()->getIsCustomer()) {
+            throw new GraphQlAuthorizationException(__('The current customer isn\'t authorized.'));
+        }
         if (!($args['input']) || !isset($args['input'])) {
             throw new GraphQlInputException(__('"input" value should be specified'));
         }

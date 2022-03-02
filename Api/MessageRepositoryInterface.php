@@ -15,25 +15,25 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 interface MessageRepositoryInterface
 {
 
-    /**
-     * @param int $sellerId
-     * @param int $messageId
-     * @return bool|string
-     */
-    public function setIsReadMessage(
-        int $sellerId,
-        int $messageId
-    );
+//     /**
+//      * @param int $sellerId
+//      * @param int $messageId
+//      * @return bool|string
+//      */
+//     public function setIsReadMessage(
+//         int $sellerId,
+//         int $messageId
+//     );
 
-    /**
-    * @param int $sellerId
-    * @param int $messageId
-    * @return bool|string
-    */
-   public function setIsReadAdminMessage(
-       int $sellerId,
-       int $messageId
-   );
+//     /**
+//     * @param int $sellerId
+//     * @param int $messageId
+//     * @return bool|string
+//     */
+//    public function setIsReadAdminMessage(
+//        int $sellerId,
+//        int $messageId
+//    );
 
     /**
      * @param int $sellerId

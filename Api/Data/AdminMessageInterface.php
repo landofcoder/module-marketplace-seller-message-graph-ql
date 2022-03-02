@@ -18,26 +18,12 @@ interface AdminMessageInterface extends \Magento\Framework\Api\ExtensibleDataInt
     const SELLER_SEND = 'seller_send';
     const ADMIN_EMAIL = 'admin_email';
     const DESCRIPTION = 'description';
-    const ADMINMESSAGE_ID = 'adminmessage_id';
     const RECEIVER_ID = 'receiver_id';
     const ADMIN_NAME = 'admin_name';
     const CREATED_AT = 'created_at';
     const SELLER_NAME = 'seller_name';
     const SUBJECT = 'subject';
     const IS_READ = 'is_read';
-
-    /**
-     * Get adminmessage_id
-     * @return string|null
-     */
-    public function getAdminmessageId();
-
-    /**
-     * Set adminmessage_id
-     * @param string $adminmessageId
-     * @return \Lof\SellerMessageGraphQl\AdminMessage\Api\Data\AdminMessageInterface
-     */
-    public function setAdminmessageId($adminmessageId);
 
     /**
      * Get description
