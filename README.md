@@ -44,13 +44,24 @@ magento 2 marketplace graphql extension
 
 1. Get Message By CustomerId
 {
-  lofListMessage {
+  sellerMessages(
+    filter
+    pageSize
+    currentPage
+    sort
+  ) {
     items {
+      message_id
       description
       subject
       status
       created_at
-      id
+      sender_email
+      sender_name
+      is_read
+      sender_id
+      owner_id
+      receiver_id
       messDetails {
         content
         sender_name
@@ -61,7 +72,7 @@ magento 2 marketplace graphql extension
 }
 2. mutation customer send message seller
 mutation {
-  LofMkpCustomerSendMessageSeller(input: {seller_id: "2", content: "hákhdkjashd"}) {
+  customerSendMessage(input: {seller_url: "testseller", content: ""}) {
     code
     message
   }
