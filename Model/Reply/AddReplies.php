@@ -52,7 +52,7 @@ class AddReplies
      * @param int|null $customerId
      * @param int $storeId
      *
-     * @return Review
+     * @return mixed
      *
      * @throws GraphQlNoSuchEntityException
      */
@@ -80,7 +80,13 @@ class AddReplies
         }
     }
 
-    public function SellerReplies(array $data)
+    /**
+     * seller replis message
+     *
+     * @param array $data
+     * @return mixed
+     */
+    public function sellerReplyMessage(array $data)
     {
         $customerSession = $this->session;
         $customerId = $customerSession->getId();

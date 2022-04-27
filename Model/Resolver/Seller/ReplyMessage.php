@@ -62,7 +62,7 @@ class ReplyMessage implements ResolverInterface
             'status' => $input['status']
         ];
 
-        $messageModel = $this->addReplies->SellerReplies($data);
+        $messageModel = $this->addReplies->sellerReplyMessage($data);
 
         return $messageModel;
     }
