@@ -48,10 +48,6 @@ class AddReplies
      * Add review to product
      *
      * @param array $data
-     * @param array $message_id
-     * @param int|null $customerId
-     * @param int $storeId
-     *
      * @return mixed
      *
      * @throws GraphQlNoSuchEntityException
