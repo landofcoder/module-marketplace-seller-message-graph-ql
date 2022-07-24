@@ -27,21 +27,32 @@ namespace Lof\SellerMessageGraphQl\Model\Resolver\Seller;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Lof\SellerMessageGraphQl\Model\Reply\AddReplies;
-
+use Lof\MarketPlace\Api\AdminMessageRepositoryInterface;
+use Magento\Customer\Model\Session;
 
 class ReplyAdminMessage implements ResolverInterface
 {
       /**
-     * @var AddReplies
+     * @var AdminMessageRepositoryInterface
      */
-    private $addReplies;
+    private $adminMessageRepository;
 
+    /**
+     * @var Session
+     */
+    protected $customerSession;
+
+    /**
+      * @param AdminMessageRepositoryInterface $adminMessageRepository
+      * @param Session $customerSession      
+     */
 
     public function __construct(
-        AddReplies $addReplies
+        AdminMessageRepositoryInterface $adminMessageRepository,
+        Session $customerSession
     ) {
-        $this->addReplies = $addReplies;
+        $this->adminMessageRepository = $adminMessageRepository;
+        $this->customerSession = $customerSession;
     }
 
     /**
@@ -56,12 +67,11 @@ class ReplyAdminMessage implements ResolverInterface
     ) {
         $input = $args['input'];
 
-        $data = [
-            'message_id' => $input['message_id'],
-            'content' => $input['content'],
-        ];
+        $customerId = $this->customerSession->getCustomer()->getId();
+        $messageId = $args['message_id'];
+        $message = $args['content'];
 
-        $messageModel = $this->addReplies->execute($data);
+        $messageModel = $this->adminMessageRepository->replyMessage(int $customerId, int $messageId, string $message);
     
         return $messageModel;
     }

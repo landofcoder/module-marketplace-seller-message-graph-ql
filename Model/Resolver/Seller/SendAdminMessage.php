@@ -27,30 +27,35 @@ use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Lof\SellerMessageGraphQl\Api\MessageRepositoryInterface;
+use Lof\MarketPlace\Model\Api\AdminMessageRepositoryInterface;
 use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
-
-
+use Magento\Customer\Model\Session;
 
 class SendAdminMessage implements ResolverInterface
 {
     
-/**
-     * @var MessageRepositoryInterface
+    /**
+     * @var AdminMessageRepositoryInterface
      */
     private $messageRepository;
 
-
+    /**
+     * @var Session
+     */
+    protected $customerSession;
 
     /**
-      * @param MessageRepositoryInterface $messageRepository
+      * @param AdminMessageRepositoryInterface $messageRepository
+      * @param Session $customerSession      
      */
 
     public function __construct(
-        MessageRepositoryInterface $messageRepository
+        AdminMessageRepositoryInterface $messageRepository,
+        Session $customerSession
     ) {
 
         $this->messageRepository = $messageRepository;
+        $this->customerSession = $customerSession;
     }
 
     /**
@@ -69,11 +74,13 @@ class SendAdminMessage implements ResolverInterface
         if (!($args['input']) || !isset($args['input'])) {
             throw new GraphQlInputException(__('"input" value should be specified'));
         }
+
+        $customerId = $this->customerSession->getCustomer()->getId();
         $args = $args['input'];
         $subject = $args['subject'];
-        $message = $args['message'];
+        $message = $args['content'];
 
-        return $this->messageRepository->sendMessageAdmin($message, $subject);
+        return $this->messageRepository->sendMessage((int) $customerId, $subject, $message);
 
     }
 }

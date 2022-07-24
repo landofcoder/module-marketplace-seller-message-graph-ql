@@ -43,6 +43,7 @@ magento 2 marketplace graphql extension
 ## Queries
 
 1. Get Message By CustomerId
+``
 {
   sellerMessages(
     filter
@@ -70,12 +71,91 @@ magento 2 marketplace graphql extension
     }
   }
 }
-2. mutation customer send message seller
+``
+2. Get admin message
+``
+{
+  sellerAdminMessages(
+    filter
+    pageSize
+    currentPage
+    sort
+  ) {
+    total_count
+    page_info
+    items {
+      message_id
+      description
+      subject
+      status
+      admin_email
+      created_at
+      admin_name
+      seller_email
+      seller_name
+      is_read
+      sender_id
+      admin_id
+      owner_id
+      seller_id
+      receiver_id
+      seller_send
+      messDetails {
+        content
+        sender_name
+        created_at
+      }
+    }
+  }
+}
+``
+3. mutation customer send message seller
+``
 mutation {
   customerSendMessage(input: {seller_url: "testseller", content: ""}) {
     code
     message
   }
 }
-3. Replies messege
+``
+4. customer Replies messege
+
+``
+mutation{
+  customerReplyMessage(message_id: "",content: "" ){
+    code
+    message
+  }
+}
+``
+5. Seller reply message
+
+``
+mutation{
+  sellerReplyMessage(message_id: "",content: "" ){
+    code
+    message
+  }
+}
+``
+6. Seller Send Message to admin
+``
+mutation{
+  sellerSendAdminMessage(subject: "",message: "" ){
+    code
+    message
+  }
+}
+``
+
+7. Seller reply message
+``
+muation{
+  sellerReplyAdminMessage(message_id: "",content: "" ){
+    code
+    message
+  }
+}
+``
+
 

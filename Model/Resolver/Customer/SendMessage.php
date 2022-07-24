@@ -30,7 +30,7 @@ use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
 use Lof\MarketPlace\Model\ResourceModel\Seller\CollectionFactory;
-
+use Magento\Customer\Model\Session;
 
 class SendMessage implements ResolverInterface
 {
@@ -44,18 +44,25 @@ class SendMessage implements ResolverInterface
      */
     protected $collectionFactory;
 
+    /**
+     * @var Session
+     */
+    protected $customerSession;
 
     /**
      * @param CollectionFactory $collectionFactory
      * @param CustomerMessageRepositoryInterface $customerMessageRepository
+     * @param Session $customerSession
      */
 
     public function __construct(
         CustomerMessageRepositoryInterface $customerMessageRepository,
-        CollectionFactory $collectionFactory
+        CollectionFactory $collectionFactory,
+        Session $customerSession
     ) {
         $this->customerMessageRepository = $customerMessageRepository;
         $this->collectionFactory = $collectionFactory;
+        $this->customerSession = $customerSession;
     }
 
     /**
@@ -77,12 +84,11 @@ class SendMessage implements ResolverInterface
         $args = $args['input'];
         $sellerUrl = $args['seller_url'];
 
-        $seller = $this->collectionFactory->create()
-                        ->addFieldToFilter("url_key", $sellerUrl)
-                        ->getFirstItem();
-        $content = $args['content'];
-        // $subject = $args['subject'];
+        $customerId = $this->customerSession->getCustomer()->getId();
 
-        return $this->customerMessageRepository->sendMessageSeller($content,(String) $seller->getSellerId());
+        $content = $args['content'];
+        $subject = $args['subject'];
+
+        return $this->customerMessageRepository->sendMessage((int) $customerId, (String) $sellerUrl, $subject, $content);
     }
 }

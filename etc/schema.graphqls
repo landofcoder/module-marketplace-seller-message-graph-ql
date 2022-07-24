@@ -197,7 +197,6 @@ input ReplyMessageInput {
 input SellerReplyMessageInput {
     message_id: Int! @doc(description: "Current message_id")
     content: String! @doc(description: "Message Content.")
-    status: SellerMessageStatus! @doc(description: "Message status: CLOSE, OPEN, PROCESSING, DONE")
 }
 
 input AdminMessageInput {
@@ -208,11 +207,4 @@ input AdminMessageInput {
 type MarketplaceOuput {
     code: String @doc(description: "The response code")
     message: String @doc(description: "The response message")
-}
-
-enum SellerMessageStatus {
-    CLOSE
-    OPEN
-    PROCESSING
-    DONE
 }

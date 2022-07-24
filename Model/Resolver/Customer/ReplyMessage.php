@@ -24,37 +24,32 @@ declare(strict_types=1);
 
 namespace Lof\SellerMessageGraphQl\Model\Resolver\Customer;
 
-use Lof\MarketPlace\Api\SellerMessageRepositoryInterface;
+use Lof\MarketPlace\Api\CustomerMessageRepositoryInterface;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Lof\MarketPlace\Api\Data\SellerMessageInterfaceFactory;
-use Lof\SellerMessageGraphQl\Model\MessageRepository;
+use Magento\Customer\Model\Session;
 
 class ReplyMessage implements ResolverInterface
 {
     /**
-     * @var SellerMessageRepositoryInterface
+     * @var CustomerMessageRepositoryInterface
      */
     private $repliesMessageRepository;
-    /**
-     * @var SellerMessageInterfaceFactory
-     */
-    protected $sellerMessageFactory;
 
     /**
-     * @var MessageRepository
+     * @var Session
      */
-    protected $messageRepository;
+    protected $customerSession;
 
     public function __construct(
-        SellerMessageRepositoryInterface $repliesMessageRepository,
-        SellerMessageInterfaceFactory $sellerMessageFactory,
-        MessageRepository $messageRepository
+        CustomerMessageRepositoryInterface $repliesMessageRepository,
+        Session $customerSession
+y
     ) {
         $this->repliesMessageRepository = $repliesMessageRepository;
-        $this->sellerMessageFactory = $sellerMessageFactory;
-        $this->messageRepository = $messageRepository;
+        $this->customerSession = $customerSession;
     }
 
     /**
@@ -68,15 +63,11 @@ class ReplyMessage implements ResolverInterface
         array $args = null
     ) {
         $input = $args['input'];
-
+        $customerId = $this->customerSession->getCustomer()->getId();
     
-        $data = [
-            'message_id' => $input['message_id'],
-            'content' => $input['content'],
-        ];
-
-        $messageModel = $this->messageRepository->getDataModel($data);
+        $messageId = $input['message_id'],
+        $message => $input['content'],
     
-        return $this->repliesMessageRepository->replyMessage($messageModel);
+        return $this->repliesMessageRepository->replyMessage(int $customerId, int $messageId, string $message);
     }
 }

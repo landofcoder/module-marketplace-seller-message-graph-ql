@@ -29,7 +29,7 @@ use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\GraphQl\Model\Query\ContextInterface;
 use Magento\Framework\GraphQl\Query\Resolver\Argument\SearchCriteria\Builder as SearchCriteriaBuilder;
-use Lof\SellerMessageGraphQl\Api\MessageRepositoryInterface;
+use Lof\MarketPlace\Api\SellerMessageRepositoryInterface;
 use Lof\MarketPlace\Model\Seller;
 use Lof\MarketPlace\Model\ResourceModel\Seller\CollectionFactory;
 
@@ -41,7 +41,7 @@ class Messages implements ResolverInterface
     private $searchCriteriaBuilder;
    
     /**
-     * @var MessageRepositoryInterface
+     * @var SellerMessageRepositoryInterface
      */
     protected $repository;
 
@@ -51,12 +51,12 @@ class Messages implements ResolverInterface
     protected $collectionFactory;
 
     /**
-     * @param MessageRepositoryInterface $repository
+     * @param SellerMessageRepositoryInterface $repository
      * @param CollectionFactory $collectionFactory
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      */
     public function __construct(
-        MessageRepositoryInterface $repository,
+        SellerMessageRepositoryInterface $repository,
         CollectionFactory $collectionFactory,
         SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
@@ -102,7 +102,7 @@ class Messages implements ResolverInterface
         $searchCriteria = $this->searchCriteriaBuilder->build( 'lof_seller_messages', $args );
         $searchCriteria->setCurrentPage( $args['currentPage'] );
         $searchCriteria->setPageSize( $args['pageSize'] );
-        $searchResult = $this->repository->getListSellerMessages((int) $seller->getSellerId(), $searchCriteria);
+        $searchResult = $this->repository->sellerGetList((int) $seller->getSellerId(), $searchCriteria);
 
         $totalPages = $args['pageSize'] ? ((int)ceil($searchResult->getTotalCount() / $args['pageSize'])) : 0;
 
