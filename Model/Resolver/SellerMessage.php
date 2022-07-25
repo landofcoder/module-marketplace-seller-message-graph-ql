@@ -14,7 +14,7 @@ use Magento\GraphQl\Model\Query\ContextInterface;
 
 class SellerMessage implements ResolverInterface
 {
-   
+
     /**
      * @var \Magento\Customer\Model\Session
      */
@@ -32,7 +32,7 @@ class SellerMessage implements ResolverInterface
     /**
      * @param \Lof\MarketPlace\Model\Message $message
      * @param \Magento\Customer\Model\Session $customerSession
-     * 
+     *
      */
     public function __construct(
         \Magento\Customer\Model\Session $customerSession,
@@ -68,7 +68,7 @@ class SellerMessage implements ResolverInterface
                 'description' => $messege->getDescription(),
                 'subject' => $messege->getSubject(),
                 'status' => $messege->getStatus(),
-                'id'=>$messege->getData('message_id')
+                'message_id'=>$messege->getMessageId()
             ];
         }
         return ['items' => $items];

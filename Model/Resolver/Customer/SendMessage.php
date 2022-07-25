@@ -29,7 +29,6 @@ use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
-use Lof\MarketPlace\Model\ResourceModel\Seller\CollectionFactory;
 use Magento\Customer\Model\Session;
 
 class SendMessage implements ResolverInterface
@@ -39,29 +38,21 @@ class SendMessage implements ResolverInterface
      */
     private $customerMessageRepository;
 
-     /**
-     * @var CollectionFactory
-     */
-    protected $collectionFactory;
-
     /**
      * @var Session
      */
     protected $customerSession;
 
     /**
-     * @param CollectionFactory $collectionFactory
      * @param CustomerMessageRepositoryInterface $customerMessageRepository
      * @param Session $customerSession
      */
 
     public function __construct(
         CustomerMessageRepositoryInterface $customerMessageRepository,
-        CollectionFactory $collectionFactory,
         Session $customerSession
     ) {
         $this->customerMessageRepository = $customerMessageRepository;
-        $this->collectionFactory = $collectionFactory;
         $this->customerSession = $customerSession;
     }
 

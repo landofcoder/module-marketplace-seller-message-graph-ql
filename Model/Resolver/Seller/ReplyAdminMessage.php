@@ -44,7 +44,7 @@ class ReplyAdminMessage implements ResolverInterface
 
     /**
       * @param AdminMessageRepositoryInterface $adminMessageRepository
-      * @param Session $customerSession      
+      * @param Session $customerSession
      */
 
     public function __construct(
@@ -71,8 +71,8 @@ class ReplyAdminMessage implements ResolverInterface
         $messageId = $args['message_id'];
         $message = $args['content'];
 
-        $messageModel = $this->adminMessageRepository->replyMessage(int $customerId, int $messageId, string $message);
-    
+        $messageModel = $this->adminMessageRepository->replyMessage((int) $customerId, (int) $messageId, (string) $message);
+
         return $messageModel;
     }
 }

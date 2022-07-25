@@ -46,7 +46,6 @@ class ReplyMessage implements ResolverInterface
     public function __construct(
         CustomerMessageRepositoryInterface $repliesMessageRepository,
         Session $customerSession
-y
     ) {
         $this->repliesMessageRepository = $repliesMessageRepository;
         $this->customerSession = $customerSession;
@@ -64,10 +63,10 @@ y
     ) {
         $input = $args['input'];
         $customerId = $this->customerSession->getCustomer()->getId();
-    
-        $messageId = $input['message_id'],
-        $message => $input['content'],
-    
-        return $this->repliesMessageRepository->replyMessage(int $customerId, int $messageId, string $message);
+
+        $messageId = $input['message_id'];
+        $message = $input['content'];
+
+        return $this->repliesMessageRepository->replyMessage((int) $customerId, (int) $messageId, (string) $message);
     }
 }

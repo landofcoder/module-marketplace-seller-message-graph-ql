@@ -27,13 +27,13 @@ use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Lof\MarketPlace\Model\Api\AdminMessageRepositoryInterface;
+use Lof\MarketPlace\Api\AdminMessageRepositoryInterface;
 use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
 use Magento\Customer\Model\Session;
 
 class SendAdminMessage implements ResolverInterface
 {
-    
+
     /**
      * @var AdminMessageRepositoryInterface
      */
@@ -46,7 +46,7 @@ class SendAdminMessage implements ResolverInterface
 
     /**
       * @param AdminMessageRepositoryInterface $messageRepository
-      * @param Session $customerSession      
+      * @param Session $customerSession
      */
 
     public function __construct(

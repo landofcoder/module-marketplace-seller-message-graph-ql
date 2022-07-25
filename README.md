@@ -109,6 +109,24 @@ magento 2 marketplace graphql extension
   }
 }
 ``
+3.1 customer list mesage
+``
+{
+  customerMessages(
+  	filter:{}
+  )
+  {
+   	items{
+   		created_at
+      description
+      subject
+      status
+			message_id   
+    }
+  }
+}
+``
+
 3. mutation customer send message seller
 ``
 mutation {
@@ -122,7 +140,7 @@ mutation {
 
 ``
 mutation{
-  customerReplyMessage(message_id: "",content: "" ){
+  customerReplyMessage(input:{message_id: "",content: "" }){
     code
     message
   }
