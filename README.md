@@ -42,213 +42,153 @@ magento 2 marketplace graphql extension
 
 ## Queries
 
-1. Get Seller Profile Info By Id
-
+1. Get Message By CustomerId
 ```
 {
-    lofSellerById(seller_id: Int!) {
-        address
-        banner_pic
-        city
-        company_description
-        company_locality
-        contact_number
-        country
-        customer_id
-        email
-        gplus_active
-        gplus_id
-        group
-        image
-        name
-        page_layout
-        region
-        return_policy
-        sale
-        seller_id
-        shipping_policy
-        shop_title
-        status
-        store_id
-        thumbnail
-        seller_rates {
-            items {
-                created_at
-                customer_id
-                detail
-                email
-                nickname
-                rate1
-                rate2
-                rate3
-                rating_id
-                seller_id
-                status
-                title
-            }
-            total_count
-        }
-  }
-}
-```
-
-2. Get List Sellers with Filter options
-
-```
-{
-    lofSellerList (
-        filter: SellerFilterInput,
-        pageSize: Int = 20,
-        currentPage: Int = 1,
-        sort: SellerSortInput
-    ) {
-        total_count
-        items {
-            seller_rates {
-                items {
-                    created_at
-                    customer_id
-                    detail
-                    email
-                    nickname
-                    rate1
-                    rate2
-                    rate3
-                    rating_id
-                    seller_id
-                    status
-                    title
-                }
-                total_count
-            }
-            sale
-            seller_id
-            name
-            thumbnail
-            country
-            address
-            group
-            products {
-                items {
-                    sale
-                    id
-                    name
-                    url_key
-                    rating_summary
-                    sku
-                    image {
-                        url
-                        label
-                    }
-                    description {
-                        html
-                    }
-                    short_description {
-                        html
-                    }
-                    product_brand
-                    price_range {
-                        maximum_price {
-                            discount {
-                                amount_off
-                                percent_off
-                            }
-                            final_price {
-                                currency
-                                value
-                            }
-                            regular_price {
-                                currency
-                                value
-                            }
-                        }
-                        minimum_price {
-                            discount {
-                                amount_off
-                                percent_off
-                            }
-                            final_price {
-                                currency
-                                value
-                            }
-                            regular_price {
-                                currency
-                                value
-                            }
-                        }
-                    }
-                    price {
-                        regularPrice {
-                            amount {
-                                currency
-                            }
-                        }
-                    }
-                }
-                total_count
-            }
-        }
-    }
-}
-```
-
-3. Filter products by seller ID
-
-```
-fragment ShopProduct on ProductInterface {
-  id
-  rating_summary
-  description {
-    html
-  }
-  name
-  image {
-    url
-  }
-  url_key
-  price_range {
-    minimum_price {
-      regular_price {
-        value
-        currency
-      }
-    }
-    maximum_price {
-      discount {
-        percent_off
-      }
-      final_price {
-        value
-        currency
-      }
-      regular_price {
-        value
-      }
-    }
-  }
-}
-
-fragment PageInfo on SearchResultPageInfo {
-  current_page
-  page_size
-  total_pages
-}
-
-lofProductBySellerId(
-    seller_id: Int!
-    search: String = ""
-    filter: ProductAttributeFilterInput
-    pageSize: Int = 20
-    currentPage: Int = 1
-    sort: ProductAttributeSortInput
+  sellerMessages(
+    filter
+    pageSize
+    currentPage
+    sort
   ) {
     items {
-      ...ShopProduct
+      message_id
+      description
+      subject
+      status
+      created_at
+      sender_email
+      sender_name
+      is_read
+      sender_id
+      owner_id
+      receiver_id
+      messDetails {
+        content
+        sender_name
+        created_at
+      }
     }
-    page_info {
-      ...PageInfo
-    }
+  }
+}
+```
+2. Get admin message
+```
+{
+  sellerAdminMessages(
+    filter
+    pageSize
+    currentPage
+    sort
+  ) {
     total_count
+    page_info
+    items {
+      message_id
+      description
+      subject
+      status
+      admin_email
+      created_at
+      admin_name
+      seller_email
+      seller_name
+      is_read
+      sender_id
+      admin_id
+      owner_id
+      seller_id
+      receiver_id
+      seller_send
+      messDetails {
+        content
+        sender_name
+        created_at
+      }
+    }
+  }
+}
+```
+3.1 customer list mesage
+```
+{
+  customerMessages(
+  	filter:{}
+  )
+  {
+   	items{
+        created_at
+        description
+        subject
+        status
+        message_id   
+    }
+  }
+}
+```
+
+3. mutation customer send message seller
+```
+mutation {
+  customerSendMessage(
+    input: {
+          seller_url: "testseller", 
+          content: ""
+    }) {
+    code
+    message
+  }
+}
+```
+4. customer Replies messege
+```
+mutation{
+  customerReplyMessage(
+    input:{
+      message_id: "",
+      content: "" 
+    }){
+    code
+    message
+  }
+}
+```
+5. Seller reply message
+```
+mutation{
+  sellerReplyMessage(
+    input:{ 
+      message_id: "",
+      content: "" 
+    }){
+    code
+    message
+  }
+}
+```
+6. Seller Send Message to admin
+```
+mutation{
+  sellerSendAdminMessage(
+    input:{
+      subject: "",message: "" 
+    }){
+    code
+    message
+  }
+}
+```
+
+7. Seller reply message
+```
+muation{
+  sellerReplyAdminMessage(
+      input:{
+          message_id: "",content: "" 
+    }){
+    code
+    message
+  }
 }
 ```
 
