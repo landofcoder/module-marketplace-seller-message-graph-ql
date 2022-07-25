@@ -108,9 +108,9 @@ magento 2 marketplace graphql extension
     }
   }
 }
-``
+
 3.1 customer list mesage
-``
+
 {
   customerMessages(
   	filter:{}
@@ -125,20 +125,20 @@ magento 2 marketplace graphql extension
     }
   }
 }
-``
+
 
 3. mutation customer send message seller
-``
+
 mutation {
   customerSendMessage(input: {seller_url: "testseller", content: ""}) {
     code
     message
   }
 }
-``
+
 4. customer Replies messege
 
-``
+
 mutation{
   customerReplyMessage(input:{message_id: "",content: "" }){
     code
@@ -148,23 +148,23 @@ mutation{
 ``
 5. Seller reply message
 
-``
+
 mutation{
   sellerReplyMessage(message_id: "",content: "" ){
     code
     message
   }
 }
-``
+
 6. Seller Send Message to admin
-``
+```
 mutation{
   sellerSendAdminMessage(subject: "",message: "" ){
     code
     message
   }
 }
-``
+```
 
 7. Seller reply message
 ``
