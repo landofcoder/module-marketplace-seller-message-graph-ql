@@ -65,7 +65,7 @@ class ReplyAdminMessage implements ResolverInterface
         array $value = null,
         array $args = null
     ) {
-        $input = $args['input'];
+        $args = $args['input'];
 
         $customerId = $this->customerSession->getCustomer()->getId();
         $messageId = $args['message_id'];

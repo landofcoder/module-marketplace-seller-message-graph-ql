@@ -78,7 +78,7 @@ class SendAdminMessage implements ResolverInterface
         $customerId = $this->customerSession->getCustomer()->getId();
         $args = $args['input'];
         $subject = $args['subject'];
-        $message = $args['content'];
+        $message = $args['message'];
 
         return $this->messageRepository->sendMessage((int) $customerId, $subject, $message);
 
